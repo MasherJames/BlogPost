@@ -61,6 +61,7 @@ def delete_specific_blog(blog_id):
 
 @app.route('/api/v1/blog/<int:blog_id>', methods=['PUT'])
 def update_specific_blog(blog_id):
+
     blog = [blog for blog in blogs if blog.id == blog_id]
 
     if not request.json:
@@ -69,8 +70,15 @@ def update_specific_blog(blog_id):
     if not blog:
         return jsonify({"Message": "There is no blog with that id"}), 404
 
-    title = request.json['title']
-    content = request.json['content']
+    if 'title' in request.json:
+        title = request.json['title']
+    else:
+        title = blog[0].title
+
+    if 'content' in request.json:
+        content = request.json['content']
+    else:
+        content = blog[0].content
 
     if not Validators.valid_title(title):
         return jsonify({
